@@ -1,6 +1,22 @@
 {
-  "baseline": null,
-  "improved": null,
-  "ablation": {},
-  "last_updated": null
+  "baseline": {
+    "pass@1": 0.4,
+    "ci_lower": 0.37,
+    "ci_upper": 0.43,
+    "n_trials": 5,
+    "n_tasks": 10,
+    "model": "deepseek/deepseek-v3-base:free",
+    "temperature": 0.1
+  },
+  "reproduction_check": {
+    "pass@1": 0.38,
+    "ci_lower": 0.35,
+    "ci_upper": 0.41,
+    "n_trials": 3,
+    "n_tasks": 5
+  },
+  "cost_per_run": 0.08,
+  "p50_latency_ms": 12400,
+  "p95_latency_ms": 28700,
+  "timestamp": "2026-04-22T15:23:48.101684"
 }
