@@ -1,0 +1,115 @@
+[project]
+name = "tenacious-conversion-engine"
+version = "0.1.0"
+description = "Automated lead generation and conversion system for Tenacious Consulting"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    {name = "Tsegay", email = "tsegayassefa27@gmail.com"}
+]
+license = {text = "MIT"}
+
+dependencies = [
+    # Core LLM and AI
+    "openai>=1.0.0",
+    "anthropic>=0.18.0",
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.5",
+    "langgraph>=0.0.20",
+    
+    # Web and API
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "httpx>=0.25.0",
+    "requests>=2.31.0",
+    
+    # Data processing
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+    
+    # Web scraping
+    "playwright>=1.40.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+    
+    # CRM and integrations
+    "hubspot-api-client>=7.0.0",
+    "calcom>=0.1.0",
+    
+    # Observability
+    "langfuse>=2.0.0",
+    
+    # Email and SMS
+    "resend>=0.1.0",
+    "africastalking>=1.4.0",
+    
+    # Evaluation
+    "tau2-bench>=0.1.0",
+    
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0",
+    "tenacity>=8.2.0",
+    "click>=8.1.0",
+    "tqdm>=4.66.0",
+    "loguru>=0.7.0",
+    
+    # Database
+    "sqlalchemy>=2.0.0",
+    "alembic>=1.12.0",
+    
+    # Async support
+    "asyncio>=3.4.3",
+    "aiofiles>=23.2.0",
+    
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.6.0",
+    "pre-commit>=3.5.0",
+    "ipython>=8.15.0",
+    "jupyter>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.0",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --cov=agent --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["agent"]
+omit = ["tests/*", "scripts/*"]

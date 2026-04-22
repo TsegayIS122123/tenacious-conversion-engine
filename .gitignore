@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs and traces
+logs/
+*.log
+*.jsonl
+trace_log.jsonl
+held_out_traces.jsonl
+
+# Data (except small samples)
+data/raw/*.csv
+data/raw/*.json
+!data/raw/.gitkeep
+data/processed/*.csv
+!data/processed/.gitkeep
+
+# Credentials and keys
+*.pem
+*.key
+*.crt
+secrets/
+credentials/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+
+# Notebooks (if any)
+.ipynb_checkpoints/
+*.ipynb
+
+# OS
+Thumbs.db
