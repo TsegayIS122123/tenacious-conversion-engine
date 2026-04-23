@@ -96,7 +96,25 @@ graph TB
     style HB fill:#bbf,stroke:#333,stroke-width:2px
     style AM fill:#bbf,stroke:#333,stroke-width:2px
 ```
-
+### Architecture Diagram (System Context)
+```mermaid
+graph TB
+    subgraph "Data Sources"
+        CB[Crunchbase ODM]
+        JP[Job Posts API]
+        LF[layoffs.fyi]
+    end
+    subgraph "Enrichment"
+        EP[Enrichment Pipeline]
+        AM[AI Maturity Scorer]
+    end
+    subgraph "Agent Core"
+        AG[Tenacious Agent]
+    end
+    CB --> EP --> AM --> AG
+    JP --> EP
+    LF --> EP
+```
 ## 📊 Data Flow
 
 ```mermaid
@@ -147,6 +165,17 @@ sequenceDiagram
         CA-->>A: Booking confirmation
         A->>C: Update prospect with meeting
     end
+```
+### Sequence Diagram (Conversation Flow)
+```mermaid
+sequenceDiagram
+    participant P as Prospect
+    participant A as Agent
+    participant C as CRM
+    P->>A: Reply to email
+    A->>C: Load history
+    A->>A: Generate response
+    A->>P: Send reply
 ```
 
 ## 🎯 ICP Segments & Qualification
@@ -315,6 +344,87 @@ uvicorn agent.api:app --reload --port 8000
 python scripts/test_conversation.py --prospect synthetic_001
 ```
 
+
+###  Completed Components
+
+#### 1. Email Handler (Resend)
+- Outbound email sending via Resend API
+- Webhook endpoint (`/webhooks/email`) for inbound replies
+- Error handling for failed sends, timeouts, and malformed payloads
+- Callback interface for downstream processing
+
+#### 2. SMS Handler (Africa's Talking)
+- Outbound SMS with warm-lead gating (no cold SMS)
+- Inbound reply webhook (`/webhooks/sms`)
+- Channel hierarchy enforcement via `is_warm_lead()` check
+- Routes replies to downstream handlers (no dead-ending)
+
+#### 3. CRM Integration (HubSpot MCP)
+- Contact creation/update with enrichment fields:
+  - ICP segment classification
+  - AI maturity score (0-3)
+  - Funding amount and date
+  - Job velocity
+  - Layoff status
+  - Competitor gap brief (JSON)
+  - Enrichment timestamp
+
+#### 4. Calendar Integration (Cal.com)
+- Booking creation endpoint callable from agent codebase
+- Webhook handler (`/webhooks/calcom`) for booking events
+- Post-booking callback triggers HubSpot record update
+
+#### 5. Signal Enrichment Pipeline
+All four required sources implemented:
+
+| Source | Method | Confidence Score |
+|--------|--------|------------------|
+| Crunchbase ODM | Firmographics + funding lookup | High |
+| Job Posts | Playwright (no login, respects robots.txt) | High/Medium/Low |
+| layoffs.fyi | CSV parsing | High |
+| Leadership Change | Detection (CTO/VP Eng) | Medium |
+
+**Output:** Structured JSON with per-signal confidence scores and AI maturity calculation (0-3)
+
+### 🚀 Deployment
+
+The system is deployed on **Render** (free tier):
+- **Base URL:** `https://tenacious-agent.onrender.com`
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `uvicorn agent.server:app --host 0.0.0.0 --port 10000`
+
+### 📡 API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/health` | GET | Health check |
+| `/webhooks/email` | POST | Resend inbound replies |
+| `/webhooks/sms` | POST | Africa's Talking SMS |
+| `/webhooks/calcom` | POST | Cal.com booking events |
+| `/send/email` | POST | Send outbound email |
+| `/enrich/{company}` | POST | Run enrichment pipeline |
+
+### 📊 Enrichment Output Example
+
+```json
+{
+  "company_name": "FinCorp",
+  "ai_maturity": {
+    "score": 2,
+    "confidence": "medium",
+    "signals": [...]
+  },
+  "icp_segment": {
+    "segment": "Segment 1: Recently Funded Series A/B",
+    "confidence": "high"
+  },
+  "competitor_gap": {
+    "identified_gaps": [...],
+    "top_quartile_threshold": 2
+  }
+}
+```
+
 ## 📈 Performance Targets
 
 | Metric | Baseline | Target | Stretch |
@@ -354,35 +464,3 @@ MIT License - See LICENSE file for details
 - **Challenge:** Week 10 - The Conversion Engine
 
 ---
-
-### Architecture Diagram (System Context)
-```mermaid
-graph TB
-    subgraph "Data Sources"
-        CB[Crunchbase ODM]
-        JP[Job Posts API]
-        LF[layoffs.fyi]
-    end
-    subgraph "Enrichment"
-        EP[Enrichment Pipeline]
-        AM[AI Maturity Scorer]
-    end
-    subgraph "Agent Core"
-        AG[Tenacious Agent]
-    end
-    CB --> EP --> AM --> AG
-    JP --> EP
-    LF --> EP
-```
-
-### Sequence Diagram (Conversation Flow)
-```mermaid
-sequenceDiagram
-    participant P as Prospect
-    participant A as Agent
-    participant C as CRM
-    P->>A: Reply to email
-    A->>C: Load history
-    A->>A: Generate response
-    A->>P: Send reply
-```
