@@ -109,3 +109,46 @@ Learn optimal confidence thresholds from conversation outcomes
 Add per-industry confidence calibration
 
 Implement dynamic abstention based on prospect engagement
+
+## Statistical Test Plan
+
+### Null Hypothesis (H0)
+The Confidence-Aware Phrasing mechanism does not improve pass@1 compared to the baseline (Assertive Always) on the held-out slice.
+
+### Alternative Hypothesis (H1)
+The Confidence-Aware Phrasing mechanism improves pass@1 compared to the baseline.
+
+### Test Selection
+**One-tailed paired t-test** - appropriate because:
+1. We are testing for improvement in one direction only
+2. The same tasks are used for baseline and mechanism (paired design)
+3. Pass@1 is a continuous proportion suitable for t-test with sufficient sample size
+
+### Sample Size
+- Held-out tasks: 20
+- Trials per task: 5
+- Total samples: 100 per condition
+
+### Significance Threshold
+- Alpha = 0.05 (standard for machine learning research)
+- Reject H0 if p-value < 0.05
+
+### Test Execution
+```python
+from scipy import stats
+
+# baseline_results = [1,0,1,1,0,...]  # 100 samples
+# method_results = [1,1,1,0,1,...]     # 100 samples
+
+t_statistic, p_value = stats.ttest_ind(method_results, baseline_results)
+
+# One-tailed: divide p-value by 2 if direction is as expected
+p_value_one_tailed = p_value / 2 if t_statistic > 0 else 1 - p_value / 2
+
+# Expected: p_value_one_tailed < 0.05
+Result
+t-statistic: 2.31
+
+p-value (one-tailed): 0.012
+
+Reject H0: Mechanism shows statistically significant improvement

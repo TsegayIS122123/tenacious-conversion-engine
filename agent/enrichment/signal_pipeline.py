@@ -264,3 +264,46 @@ class SignalEnrichmentPipeline:
                 "leadership_change": leadership_change
             }
         }
+
+    def _get_competitors_sparse_handling(self, sector: str, company_name: str) -> List[str]:
+        """Handle sectors with fewer than 5 viable competitors"""
+        
+        # Define fallback sectors for sparse cases
+        sparse_sector_fallbacks = {
+            "Quantum Computing": "Advanced Computing",
+            "Space Tech": "Aerospace",
+            "Biotech AI": "Healthcare AI",
+            "Edge Computing": "Cloud Infrastructure"
+        }
+        
+        competitors = self._query_competitor_database(sector)
+        
+        if len(competitors) < 5:
+            # Log sparse sector warning
+            logger.warning(f"Sparse sector: {sector} has only {len(competitors)} competitors")
+            
+            # Expand to parent sector if available
+            parent_sector = sparse_sector_fallbacks.get(sector)
+            if parent_sector:
+                parent_competitors = self._query_competitor_database(parent_sector)
+                competitors.extend(parent_competitors)
+                logger.info(f"Expanded to parent sector {parent_sector}, now {len(competitors)} competitors")
+            
+            # If still sparse, use sector-agnostic top performers
+            if len(competitors) < 5:
+                competitors = self._get_top_ai_performers_across_sectors()
+                logger.info(f"Using cross-sector top performers: {len(competitors)} competitors")
+        
+        # Deduplicate and limit to 10
+        competitors = list(set(competitors))[:10]
+        
+        return competitors
+    
+    def _get_top_ai_performers_across_sectors(self) -> List[str]:
+        """Fallback: Return top AI performers regardless of sector"""
+        # In production, this would query a pre-computed list
+        return [
+            "OpenAI", "Anthropic", "Google DeepMind",
+            "Microsoft AI", "Meta FAIR", "Amazon AI",
+            "NVIDIA AI", "IBM Research", "Apple ML"
+        ]

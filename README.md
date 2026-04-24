@@ -596,6 +596,74 @@ Business cost: $12,000 per occurrence
 - **Page 2**: Skeptic's appendix with 4 missed failures, lossiness analysis, kill-switch
 - **Evidence graph**: Every claim mapped to `trace_id` or `source_ref`
 
+## 🔧 Known Limitations & Next Steps for Successor
+
+### Immediate Issues to Address (Week 1-2)
+
+| Issue | Priority | Estimated Fix | Business Impact |
+|-------|----------|---------------|-----------------|
+| **P-001 misclassification** (post-layoff funded companies) | High | 2 days | $12,000 per occurrence |
+| **Confidence threshold tuning** (currently hardcoded 0.7/0.4) | Medium | 1 day | 5-10% accuracy improvement |
+| **Multi-thread session sharing** (CEO vs CTO different answers) | Medium | 3 days | $15,000 per occurrence |
+
+### Missing Features for Production
+
+1. **Langfuse Observability Integration**
+   - Code stub exists but not connected
+   - Add: `langfuse.trace()` calls in agent/server.py
+   - Effort: 2 hours
+
+2. **Real API Keys Integration**
+   - Currently using test keys
+   - Need: Resend, Africa's Talking, HubSpot, Cal.com production keys
+   - Effort: 1 hour
+
+3. **Bench Summary Weekly Update**
+   - Currently static stub
+   - Need: CSV ingestion with weekly refresh
+   - Effort: 4 hours
+
+### Technical Debt
+
+```python
+# 1. Confidence thresholds should be dynamic, not hardcoded
+# Current:
+if confidence == "high":
+    return assertive_phrasing()
+# Should be:
+if confidence_score > dynamic_threshold(conversation_history):
+    return assertive_phrasing()
+
+
+# 2. No caching for enrichment (re-runs on every message)
+# Add: Redis or in-memory TTL cache
+
+# 3. Trace log rotation not implemented (file grows indefinitely)
+# Add: log rotation or database storage
+Deployment Checklist for Successor
+Replace .env.example with actual .env on Render
+
+Run playwright install chromium on deployment
+
+Set SEND_TO_REAL_PROSPECTS=False initially
+
+Monitor Langfuse for first 100 conversations
+
+Manual audit of 10% of enriched companies
+
+Contact for Handoff
+Code Owner: Tsegay
+
+Repository: https://github.com/TsegayIS122123/tenacious-conversion-engine
+
+Key Files:
+
+agent/mechanisms/confidence_phrasing.py - Core mechanism
+
+agent/enrichment/signal_pipeline.py - Signal collection
+
+probes/probe_library.md - Failure modes documented
+```
 
 ## 🛡️ Kill Switch
 
