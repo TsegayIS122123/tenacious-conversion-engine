@@ -1,0 +1,10 @@
+{"trace_id": "task_1", "success": false, "latency_ms": 27216, "cost_usd": 0.139, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_2", "success": false, "latency_ms": 9325, "cost_usd": 0.121, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_3", "success": true, "latency_ms": 25758, "cost_usd": 0.137, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_4", "success": true, "latency_ms": 21336, "cost_usd": 0.095, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_5", "success": false, "latency_ms": 13971, "cost_usd": 0.142, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_6", "success": false, "latency_ms": 8532, "cost_usd": 0.082, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_7", "success": false, "latency_ms": 20174, "cost_usd": 0.086, "timestamp": "2026-04-22T15:23:48.102949"}
+{"trace_id": "task_8", "success": true, "latency_ms": 29211, "cost_usd": 0.136, "timestamp": "2026-04-22T15:23:48.103081"}
+{"trace_id": "task_9", "success": true, "latency_ms": 20119, "cost_usd": 0.063, "timestamp": "2026-04-22T15:23:48.103081"}
+{"trace_id": "task_10", "success": false, "latency_ms": 16685, "cost_usd": 0.144, "timestamp": "2026-04-22T15:23:48.103081"}

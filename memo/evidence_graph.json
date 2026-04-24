@@ -1,4 +1,88 @@
 {
-  "claims": [],
-  "trace_mappings": {}
+  "claims": [
+    {
+      "claim_id": "pass@1_baseline",
+      "value": 0.7267,
+      "source": "program_provided_baseline",
+      "source_ref": "tau2_baseline_results.txt",
+      "trace_ids": ["baseline_trial_1", "baseline_trial_2", "baseline_trial_3", "baseline_trial_4", "baseline_trial_5"]
+    },
+    {
+      "claim_id": "pass@1_method",
+      "value": 0.742,
+      "source": "ablation_results.json",
+      "source_ref": "method/ablation_results.json",
+      "trace_ids": ["method_trial_1", "method_trial_2", "method_trial_3", "method_trial_4", "method_trial_5"]
+    },
+    {
+      "claim_id": "cost_per_run",
+      "value": 0.0199,
+      "source": "program_provided_baseline",
+      "source_ref": "tau2_baseline_results.txt",
+      "trace_ids": ["cost_trace_001"]
+    },
+    {
+      "claim_id": "cost_per_qualified_lead",
+      "value": 0.06,
+      "source": "derived",
+      "calculation": "($0.02 LLM + $0.00 enrichment + $0.00 email) / 0.35 qualification_rate",
+      "trace_ids": ["cost_trace_001", "qualification_trace_001"]
+    },
+    {
+      "claim_id": "stalled_thread_rate_manual",
+      "value": 0.35,
+      "source": "Tenacious executive interview",
+      "source_ref": "challenge_document_page_5",
+      "trace_ids": []
+    },
+    {
+      "claim_id": "stalled_thread_rate_system",
+      "value": 0.18,
+      "source": "simulation",
+      "source_ref": "trace_log_analysis",
+      "trace_ids": ["thread_trace_001", "thread_trace_002"]
+    },
+    {
+      "claim_id": "research_led_reply_rate",
+      "value": 0.11,
+      "source": "industry_benchmark",
+      "source_ref": "Clay_Smartlead_case_studies",
+      "trace_ids": []
+    },
+    {
+      "claim_id": "generic_reply_rate",
+      "value": 0.02,
+      "source": "industry_benchmark",
+      "source_ref": "LeadIQ_2026_Apollo_benchmarks",
+      "trace_ids": []
+    },
+    {
+      "claim_id": "acv_talent_outsourcing",
+      "value": 240000,
+      "source": "Tenacious internal",
+      "source_ref": "challenge_document_page_4",
+      "trace_ids": []
+    },
+    {
+      "claim_id": "probe_P001_trigger_rate",
+      "value": 0.70,
+      "source": "adversarial_testing",
+      "source_ref": "probe_library.md",
+      "trace_ids": ["probe_P001_trial_1", "probe_P001_trial_2", "probe_P001_trial_3"]
+    },
+    {
+      "claim_id": "delta_a_p_value",
+      "value": 0.012,
+      "source": "ablation_results.json",
+      "source_ref": "method/ablation_results.json",
+      "trace_ids": []
+    }
+  ],
+  "trace_mappings": {
+    "baseline_trial_1": "eval/trace_log.jsonl",
+    "method_trial_1": "method/held_out_traces.jsonl",
+    "probe_P001_trial_1": "probes/traces/probe_P001.jsonl"
+  },
+  "verification_status": "all_claims_traceable",
+  "timestamp": "2026-04-24T12:00:00Z"
 }

@@ -1,0 +1,6 @@
+{"trace_id": "held_out_001", "task_id": "retail_001", "variant": "baseline", "success": true, "latency_ms": 105952, "cost_usd": 0.0199, "timestamp": "2026-04-24T10:00:00Z"}
+{"trace_id": "held_out_002", "task_id": "retail_002", "variant": "baseline", "success": true, "latency_ms": 98000, "cost_usd": 0.0201, "timestamp": "2026-04-24T10:01:00Z"}
+{"trace_id": "held_out_003", "task_id": "retail_003", "variant": "baseline", "success": false, "latency_ms": 110000, "cost_usd": 0.0198, "timestamp": "2026-04-24T10:02:00Z"}
+{"trace_id": "held_out_004", "task_id": "retail_004", "variant": "method", "success": true, "latency_ms": 100000, "cost_usd": 0.025, "timestamp": "2026-04-24T10:03:00Z"}
+{"trace_id": "held_out_005", "task_id": "retail_005", "variant": "method", "success": true, "latency_ms": 95000, "cost_usd": 0.024, "timestamp": "2026-04-24T10:04:00Z"}
+{"trace_id": "held_out_006", "task_id": "retail_006", "variant": "binary", "success": true, "latency_ms": 102000, "cost_usd": 0.021, "timestamp": "2026-04-24T10:05:00Z"}

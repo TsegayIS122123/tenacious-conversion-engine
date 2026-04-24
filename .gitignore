@@ -59,3 +59,18 @@ htmlcov/
 
 # OS
 Thumbs.db
+
+# Secrets and credentials
+.env
+*.key
+*.pem
+secrets/
+
+# Large trace files (keep samples only)
+*.jsonl
+!method/held_out_traces.jsonl
+!eval/trace_log.jsonl
+
+# Temporary files
+*.tmp
+*.bak

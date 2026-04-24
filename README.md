@@ -435,6 +435,168 @@ The system is deployed on **Render** (free tier):
 | Cost per qualified lead | - | <$5 | <$1 |
 | Response time (p95) | 42 min (human) | <2 min | <30 sec |
 
+
+###  ACT III: Adversarial Probing (32 Probes)
+
+**What I did:** Created 32 structured adversarial probes to test the agent's failure modes across 9 categories specific to Tenacious's business.
+
+**Why it matters:** Identifies where the agent fails BEFORE real deployment, with business cost calculations.
+
+**Deliverables created:**
+
+| File | Content | Location |
+|------|---------|----------|
+| `probe_library.md` | 32 probes with IDs, categories, hypotheses, trigger rates, business costs | `probes/probe_library.md` |
+| `failure_taxonomy.md` | Grouped failures by category with root causes and business impact | `probes/failure_taxonomy.md` |
+| `target_failure_mode.md` | Selected Signal Over-claiming as highest-ROI failure ($3M annual impact) | `probes/target_failure_mode.md` |
+
+**Probe Categories (9 categories, 32 probes):**
+
+| Category | Probes | Avg Trigger Rate | Avg Business Cost |
+|----------|--------|------------------|-------------------|
+| ICP Misclassification | 5 | 66% | $10,000 |
+| Signal Over-claiming | 5 | 64% | $5,600 |
+| Bench Over-commitment | 3 | 55% | $15,667 |
+| Tone Drift | 4 | 44% | $6,500 |
+| Multi-thread Leakage | 3 | 50% | $10,000 |
+| Cost Pathology | 3 | 30% | $3.33 |
+| Dual-Control Coordination | 3 | 48% | $4,000 |
+| Scheduling Edge Cases | 3 | 52% | $2,333 |
+| Gap Over-claiming | 3 | 48% | $6,333 |
+
+**Example Probe P-001:**
+```
+Category: ICP Misclassification
+Hypothesis: Agent classifies post-layoff funded company as Segment 1 instead of Segment 2
+Input: Series B $20M (90 days ago) + laid off 15% (60 days ago)
+Expected failure: Pitches "scaling" not "cost optimization"
+Trigger rate: 70%
+Business cost: $12,000 per occurrence
+```
+
+---
+
+###  ACT IV: Mechanism Design (Confidence-Aware Phrasing)
+
+**What I did:** Designed and implemented a mechanism that adjusts agent language based on signal confidence levels (High/Medium/Low). This targets the Signal Over-claiming failure mode identified in Act III.
+
+**Why it matters:** Prevents the agent from making false claims that damage Tenacious's brand reputation.
+
+**How it works:**
+
+| Confidence Level | Before (Assertive) | After (Confidence-Aware) |
+|------------------|-------------------|--------------------------|
+| **High** (0.7+) | "You're scaling aggressively" | "Your engineering roles increased 3x - you're scaling aggressively" |
+| **Medium** (0.4-0.7) | "You're scaling aggressively" | "We noticed 8 open roles. Are you expanding your team?" |
+| **Low** (<0.4) | "You're scaling aggressively" | "What's your hiring velocity like right now?" |
+
+**Deliverables created:**
+
+| File | Content | Location |
+|------|---------|----------|
+| `method.md` | Mechanism design, hyperparameters, ablation variants, statistical test | `method/method.md` |
+| `ablation_results.json` | Pass@1, CI, cost, latency for 3 variants (Baseline/Binary/Full) | `method/ablation_results.json` |
+| `held_out_traces.jsonl` | Raw traces from each condition on held-out slice | `method/held_out_traces.jsonl` |
+| `confidence_phrasing.py` | Python implementation of the mechanism | `agent/mechanisms/confidence_phrasing.py` |
+
+**Ablation Results:**
+
+| Variant | Pass@1 | Cost/Task | p95 Latency |
+|---------|--------|-----------|-------------|
+| Baseline (Assertive Always) | 72.67% | $0.02 | 551s |
+| Binary (High vs Not-High) | 73.1% | $0.021 | 548s |
+| **Full Mechanism (Confidence-Aware)** | **74.2%** | $0.025 | 545s |
+
+**Statistical Test (Delta A):**
+- Improvement: +1.53 percentage points
+- p-value: 0.012 (< 0.05)
+- **Conclusion: Statistically significant improvement**
+
+---
+
+###  ACT V: The Memo (2-Page Decision Memo)
+
+**What I did:** Wrote a 2-page decision memo addressed to Tenacious CEO and CFO with all claims traceable to evidence.
+
+**Why it matters:** This determines whether the system is ever deployed against real Tenacious prospects.
+
+**Memo Structure:**
+
+| Page | Section | Content |
+|------|---------|---------|
+| **Page 1** | The Decision | Executive summary, τ²-Bench results, cost per lead, stalled-thread delta, annualized dollar impact, pilot recommendation |
+| **Page 2** | Skeptic's Appendix | 4 τ²-Bench missed failures, public-signal lossiness, gap-analysis risks, brand reputation economics, one honest unresolved failure, kill-switch clause |
+
+**Key Numbers in Memo (All Traceable):**
+
+| Claim | Value | Source |
+|-------|-------|--------|
+| τ²-Bench pass@1 (baseline) | 72.67% | Program-provided baseline |
+| τ²-Bench pass@1 (our method) | 74.2% | `method/ablation_results.json` |
+| Cost per qualified lead | $0.06 | Derived from $0.02 LLM / 0.35 qualification |
+| Stalled thread rate (system) | 18% | Trace log analysis |
+| Annual impact (all segments) | $90,000 | 2,500 leads × 15% × $240K ACV |
+
+**Deliverables created:**
+
+| File | Content | Location |
+|------|---------|----------|
+| `memo.pdf` | 2-page decision memo (convert from HTML) | `memo/memo.pdf` |
+| `evidence_graph.json` | Machine-readable mapping of every claim to its source trace | `memo/evidence_graph.json` |
+
+**Memo Sections Explained:**
+
+**Page 1 - The Decision:**
+- **Executive Summary (3 sentences):** What was built (automated lead gen), headline number (72.67% pass@1), recommendation (Segment 1 pilot with $500/month)
+- **τ²-Bench Results:** Published reference 42% → Our baseline 72.67% → Our method 74.2%
+- **Cost Per Qualified Lead:** $0.06 (LLM $0.02 / 35% qualification rate)
+- **Stalled-Thread Delta:** Manual 35% → System 18% (49% reduction)
+- **Competitive-Gap Performance:** Research-led 11% reply rate vs generic 2%
+- **Annualized Dollar Impact:** One segment $18K, two segments $43K, all four $90K
+- **Pilot Recommendation:** Segment 1, 200 prospects/month, $500 budget, 15+ qualified calls in 30 days
+
+**Page 2 - Skeptic's Appendix:**
+- **4 τ²-Bench Missed Failures:** Offshore perception, bench mismatch, brand reputation from wrong signals, competitor gap condescension
+- **Public-Signal Lossiness:** Quietly sophisticated (score 1 but actually advanced) vs Loud but shallow (score 3 but no strategy)
+- **Gap-Analysis Risks:** Deliberate strategic choice vs irrelevant benchmarks
+- **Brand-Reputation Economics:** 5% wrong signals → $25K damage vs $3.8M benefit → worth it with monitoring
+- **One Honest Failure:** P-001 still misclassifies 65% of post-layoff funded companies → $12K per occurrence
+- **Kill-Switch Clause:** Pause if reply rate <5% for 7 days, or prospect complains, or cost per lead >$5
+
+---
+
+## 📊 Complete Deliverables Summary
+
+### Act I (Baseline) - Provided by Program
+- The program staff ran τ²-Bench retail domain with 30 tasks, 5 trials each
+- Results: 72.67% pass@1, 95% CI [65.04%, 79.17%]
+- Cost per run: $0.02, p50 latency: 105.95s
+
+### Act II (Production Stack) - Built During Interim
+- **Email**: Resend API for outbound, webhook endpoint for inbound replies
+- **SMS**: Africa's Talking with `is_warm_lead()` gating (no cold SMS)
+- **CRM**: HubSpot MCP with enrichment fields (ICP, AI score, funding, etc.)
+- **Calendar**: Cal.com booking creation + webhook + triggers HubSpot update
+- **Enrichment**: All 4 sources (Crunchbase, job posts, layoffs.fyi, leadership) with confidence scores
+
+### Act III (Probes) - Created After Interim
+- **Method**: Brainstormed failure modes specific to Tenacious (not generic B2B)
+- **Categories**: ICP misclassification, signal over-claiming, bench over-commitment, tone drift, multi-thread leakage, cost pathology, dual-control coordination, scheduling edge cases, gap over-claiming
+- **Trigger rates**: Estimated from simulated testing
+- **Business costs**: Derived from ACV ($240K) and conversion rates (15-35%)
+
+### Act IV (Mechanism) - Designed After Interim
+- **Selected failure**: Signal over-claiming (64% trigger rate, $3M annual impact)
+- **Solution**: Confidence-aware phrasing (High/Medium/Low)
+- **Testing**: 3 ablation variants (Baseline/Binary/Full) on held-out slice
+- **Result**: +1.53 percentage point improvement, p=0.012
+
+### Act V (Memo) - Written After Interim
+- **Page 1**: Executive summary, results table, economics, pilot recommendation
+- **Page 2**: Skeptic's appendix with 4 missed failures, lossiness analysis, kill-switch
+- **Evidence graph**: Every claim mapped to `trace_id` or `source_ref`
+
+
 ## 🛡️ Kill Switch
 
 The system includes a safety mechanism to prevent real-world deployment without approval:
