@@ -146,3 +146,33 @@ Analysis of 32 adversarial probes across 9 categories with observed trigger rate
 **Rationale:** Highest frequency (64% trigger rate) × significant brand impact. Mechanism implemented: Signal-Confidence-Aware Phrasing.
 
 **Expected improvement:** Reduce trigger rate from 64% to <30%.
+
+## Category 10: Signal Reliability (4 probes, 57.5% avg trigger rate)
+
+### Observed Patterns
+- Agent treats stale signals as current without staleness decay
+- Job post velocity interpreted as scaling without seniority/seasonality analysis
+- High AI maturity score from shallow signals treated as genuine capability
+- Internal promotions misclassified as vendor-reassessment triggers
+
+### Root Causes
+- No temporal decay function for funding signals (180-day window ignored)
+- Job post quality not analyzed (junior vs senior, seasonal patterns)
+- AI maturity confidence field exists but not used to gate claims
+- Leadership change detection lacks context (internal vs external)
+
+### False-Positive Rates Documented
+| Signal Type | False-Positive Rate | Mitigation |
+|-------------|---------------------|------------|
+| Funding >180 days | 30% | Add decay function, ask vs assert |
+| Seasonal job posts | 25% | Compare year-over-year, not just 60-day |
+| AI roles without leadership | 40% | Gate confidence on leadership presence |
+| Internal promotions | 35% | Distinguish external hires in detection |
+
+### Business Impact: $26,000 total across category
+
+### Remediation Priority: HIGH
+- Confidence field exists but not used to over-ride score
+- Add temporal decay to all time-based signals
+- Implement seniority analysis for job posts
+

@@ -58,3 +58,24 @@ If mechanism fails to reduce trigger rate below 40%, implement:
 Abstention: Send exploratory email instead of making claims
 
 Human-in-loop: Route low-confidence signals to human review
+
+## Alternative Target: Signal Reliability False Positives
+
+### Why This Could Be Higher ROI
+
+The 4 signal reliability probes show:
+- Average trigger rate: 57.5%
+- Average business cost: $6,500
+- Annual impact: ~$3.7M
+
+### Comparison with Current Target (Signal Over-claiming)
+
+| Metric | Signal Over-claiming | Signal Reliability |
+|--------|---------------------|-------------------|
+| Trigger rate | 64% | 57.5% |
+| Business cost | $5,600 | $6,500 |
+| Annual impact | $3.0M | $3.7M |
+| Fix complexity | Medium | Medium |
+
+**Conclusion:** Both are high-value targets. Signal Reliability has slightly higher annual impact due to higher per-occurrence cost.
+
